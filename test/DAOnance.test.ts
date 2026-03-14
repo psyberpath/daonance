@@ -188,14 +188,14 @@ describe("DAOnance", function () {
   // ─── Request Reveal Guards ──────────────────────────────────
 
   it("should prevent reveal before deadline", async function () {
-    let tx = await contract.connect(signers.alice).createProposal("Early Reveal", "desc", 3600, 10);
+    const tx = await contract.connect(signers.alice).createProposal("Early Reveal", "desc", 3600, 10);
     await tx.wait();
 
     await expect(contract.connect(signers.alice).requestReveal(0)).to.be.revertedWith("DAOnance: voting still open");
   });
 
   it("should prevent non-creator from requesting reveal", async function () {
-    let tx = await contract.connect(signers.alice).createProposal("Auth Test", "desc", 1, 10);
+    const tx = await contract.connect(signers.alice).createProposal("Auth Test", "desc", 1, 10);
     await tx.wait();
 
     await ethers.provider.send("evm_increaseTime", [2]);

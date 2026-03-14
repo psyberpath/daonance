@@ -21,6 +21,9 @@ export default tseslint.config(
       "*.env",
       "*.log",
       "coverage.json",
+      "frontend/**",
+      "print_deployer.ts",
+      "print_address_offline.js"
     ],
   },
   eslint.configs.recommended,
