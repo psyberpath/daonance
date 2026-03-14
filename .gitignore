@@ -23,3 +23,7 @@ tmp
 coverage.json
 pnpm-lock.yaml
 yarn.lock
+print_address_offline.js
+print_deployer.ts
+fhevm-docs.md
+pitch_script.md

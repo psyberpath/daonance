@@ -1,110 +1,64 @@
-# FHEVM Hardhat Template
+# DAOnance — Private On-Chain Governance
 
-A Hardhat-based template for developing Fully Homomorphic Encryption (FHE) enabled Solidity smart contracts using the
-FHEVM protocol by Zama.
+**Tagline:** Vote without revealing your vote.
 
-## Quick Start
+DAOnance is a privacy-first decentralized governance platform built on Zama's Fully Homomorphic Encryption (fhEVM) protocol. It enables DAOs to create proposals where community members can cast encrypted votes on-chain. The smart contract tallies the votes homomorphically without ever decrypting individual voter preferences. 
 
-For detailed instructions see:
-[FHEVM Hardhat Quick Start Tutorial](https://docs.zama.ai/protocol/solidity-guides/getting-started/quick-start-tutorial)
+## Features
 
-### Prerequisites
+- **Encrypted Voting:** Votes (1 for YES, 0 for NO) are encrypted off-chain and submitted as `externalEuint32` values.
+- **Homomorphic Tallying:** The contract securely accumulates YES/NO counts using `FHE.add` and `FHE.select` without seeing the vote values.
+- **Permissionless Reveal via FHE:** After the voting deadline, the encrypted tallies are made publicly decryptable via a 3-step async FHE flow, ensuring cryptographic integrity before plaintext results are stored on-chain.
+- **Double-Vote Prevention:** Standard mapping checks ensure each address can only cast one encrypted vote per proposal.
 
-- **Node.js**: Version 20 or higher
-- **npm or yarn/pnpm**: Package manager
+## Deployment
 
-### Installation
+The DAOnance smart contract is deployed on the **Sepolia Testnet**.
 
-1. **Install dependencies**
+- **Contract Address:** `0xf511B527619C74d79c869208e5F3CEE47F971670`
+- **Network:** Sepolia (Chain ID: 11155111)
 
-   ```bash
-   npm install
-   ```
+## Setup & Running Locally
 
-2. **Set up environment variables**
+### 1. Smart Contract (Hardhat)
 
-   ```bash
-   npx hardhat vars set MNEMONIC
+```bash
+# Install dependencies
+npm install
 
-   # Set your Infura API key for network access
-   npx hardhat vars set INFURA_API_KEY
+# Run the FHE test suite
+npx hardhat test
 
-   # Optional: Set Etherscan API key for contract verification
-   npx hardhat vars set ETHERSCAN_API_KEY
-   ```
-
-3. **Compile and test**
-
-   ```bash
-   npm run compile
-   npm run test
-   ```
-
-4. **Deploy to local network**
-
-   ```bash
-   # Start a local FHEVM-ready node
-   npx hardhat node
-   # Deploy to local network
-   npx hardhat deploy --network localhost
-   ```
-
-5. **Deploy to Sepolia Testnet**
-
-   ```bash
-   # Deploy to Sepolia
-   npx hardhat deploy --network sepolia
-   # Verify contract on Etherscan
-   npx hardhat verify --network sepolia <CONTRACT_ADDRESS>
-   ```
-
-6. **Test on Sepolia Testnet**
-
-   ```bash
-   # Once deployed, you can run a simple test on Sepolia.
-   npx hardhat test --network sepolia
-   ```
-
-## 📁 Project Structure
-
-```
-fhevm-hardhat-template/
-├── contracts/           # Smart contract source files
-│   └── FHECounter.sol   # Example FHE counter contract
-├── deploy/              # Deployment scripts
-├── tasks/               # Hardhat custom tasks
-├── test/                # Test files
-├── hardhat.config.ts    # Hardhat configuration
-└── package.json         # Dependencies and scripts
+# Deploy to local FHEVM node or Sepolia
+npx hardhat deploy --network sepolia --tags DAOnance
 ```
 
-## 📜 Available Scripts
+### 2. Frontend (Vite + React)
 
-| Script             | Description              |
-| ------------------ | ------------------------ |
-| `npm run compile`  | Compile all contracts    |
-| `npm run test`     | Run all tests            |
-| `npm run coverage` | Generate coverage report |
-| `npm run lint`     | Run linting checks       |
-| `npm run clean`    | Clean build artifacts    |
+The frontend features a premium, vibrant dark theme (amber/orange on pure black).
 
-## 📚 Documentation
+```bash
+cd frontend
 
-- [FHEVM Documentation](https://docs.zama.ai/fhevm)
-- [FHEVM Hardhat Setup Guide](https://docs.zama.ai/protocol/solidity-guides/getting-started/setup)
-- [FHEVM Testing Guide](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat/write_test)
-- [FHEVM Hardhat Plugin](https://docs.zama.ai/protocol/solidity-guides/development-guide/hardhat)
+# Install dependencies
+npm install
 
-## 📄 License
+# Run development server
+npm run dev
 
-This project is licensed under the BSD-3-Clause-Clear License. See the [LICENSE](LICENSE) file for details.
+# Build for production
+npm run build
+```
 
-## 🆘 Support
+## How It Works (The 3-Step FHE Reveal Flow)
 
-- **GitHub Issues**: [Report bugs or request features](https://github.com/zama-ai/fhevm/issues)
-- **Documentation**: [FHEVM Docs](https://docs.zama.ai)
-- **Community**: [Zama Discord](https://discord.gg/zama)
+Zama's fhEVM requires a secure off-chain relayer flow to decrypt state variables safely:
 
----
+1. **Request Reveal (On-Chain):** The proposal creator calls `requestReveal(id)` after the voting deadline. This marks the encrypted tally counters as publicly decryptable (`FHE.makePubliclyDecryptable()`).
+2. **Decrypt (Off-Chain):** Anyone can fetch the decryption handles and call the KMS relayer (`publicDecrypt()`) off-chain to get the plaintext tallies and a cryptographic proof.
+3. **Finalize (On-Chain):** Anyone calls `finalizeReveal(id, yes, no, proof)`. The contract verifies the proof using `FHE.checkSignatures()`. If valid, the plaintext tallies are permanently saved and the proposal is marked as "Revealed".
 
-**Built with ❤️ by the Zama team**
+## Tech Stack
+- **Smart Contracts:** Solidity, Hardhat, Zama `@fhevm/solidity`
+- **Frontend:** React, Vite, TypeScript, `ethers.js` (v6)
+- **Styling:** Custom CSS Design System (Grid/Flexbox, CSS Variables)
