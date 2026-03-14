@@ -47,7 +47,7 @@ export function useWallet(): WalletState {
         method: "wallet_requestPermissions",
         params: [{ eth_accounts: {} }],
       });
-      
+
       await eth.request({ method: "eth_requestAccounts" });
       const provider = new BrowserProvider(eth);
       const s = await provider.getSigner();
