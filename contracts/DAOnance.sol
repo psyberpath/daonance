@@ -165,7 +165,6 @@ contract DAOnance is ZamaEthereumConfig {
         // Verify the decryption proof — reverts if invalid
         FHE.checkSignatures(handles, cleartexts, decryptionProof);
 
-        // Store the verified plaintext tallies
         p.revealed = true;
         p.revealedYesCount = yesCount;
         p.revealedNoCount = noCount;

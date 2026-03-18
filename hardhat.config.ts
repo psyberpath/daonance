@@ -12,6 +12,9 @@ import "solidity-coverage";
 import "./tasks/accounts";
 import "./tasks/FHECounter";
 import "./tasks/createProposal";
+import "./tasks/castVote";
+import "./tasks/requestReveal";
+import "./tasks/finalizeReveal";
 
 // Run 'npx hardhat vars setup' to see the list of variables that need to be set
 

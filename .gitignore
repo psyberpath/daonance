@@ -25,5 +25,6 @@ pnpm-lock.yaml
 yarn.lock
 print_address_offline.js
 print_deployer.ts
+print_script.md
 fhevm-docs.md
-pitch_script.md
+daonance-frontend-test/
